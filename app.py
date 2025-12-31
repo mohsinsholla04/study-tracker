@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, session
 from flask_session import Session
 from db import *
 from helpers import *
-from datetime import datetime
+from functools import wraps
 
 app = Flask(__name__)
 
@@ -12,12 +12,22 @@ app.config["SESSION_TYPE"] ="filesystem"
 Session(app)
 
 
+def login_required(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        user_id = session.get("user_id")
+        if not user_id:
+            return redirect("/login")
+        
+        kwargs["user_id"] = user_id
+        return func(*args, **kwargs)
+    return wrapper 
+
+
 @app.route("/")
 # Shows dashboard 
-def index():
-    user_id = session.get("user_id")
-    if not user_id:
-        return redirect("/login")
+@login_required
+def index(user_id):
     
     today_stats_summary, today_stats = get_dashboard_stats(1, user_id)
     week_stats_summary, week_stats = get_dashboard_stats(7, user_id)
@@ -25,22 +35,16 @@ def index():
     
     return render_template("index.html", username=fetch_username(user_id), today_stats_summary=today_stats_summary, today_stats=today_stats, week_stats_summary=week_stats_summary, week_stats=week_stats, month_stats_summary=month_stats_summary, month_stats=month_stats)
 
-
 @app.route("/subjects")
-def subjects():
-    user_id = session.get("user_id")
-    if not user_id:
-        return redirect("/login")
+@login_required
+def subjects(user_id):
     
     subjects = fetch_subjects(user_id)
     return render_template("subjects.html", subjects=subjects)
 
-
 @app.route("/subjects/<int:subject_id>")
-def subject(subject_id):
-    user_id = session.get("user_id")
-    if not user_id:
-        return redirect("/login")
+@login_required
+def subject(user_id, subject_id):
     
     subject = get_subject_stats(subject_id)
     chapters = fetch_chapters(subject_id) 
@@ -48,12 +52,9 @@ def subject(subject_id):
     
     return render_template("subject.html", subject=subject, chapters=chapters, grouped_topics=grouped_topics, ungrouped_topics=ungrouped_topics)
 
-
 @app.route("/subjects/add", methods=["POST"])
-def add_subject():
-    user_id = session.get("user_id")
-    if not user_id:
-       return redirect("/login")
+@login_required
+def add_subject(user_id):
     
     subject_name = request.form.get("subject_name")
     if not subject_name:
@@ -67,16 +68,14 @@ def add_subject():
     return redirect("/subjects")
 
 @app.route("/subjects/<int:subject_id>/delete", methods=["POST"])
-def delete_subject(subject_id):
+@login_required
+def delete_subject(user_id, subject_id):
     remove_subject(subject_id)
     return redirect("/subjects")
 
-
 @app.route("/subjects/<int:subject_id>/topics/add", methods=["POST"])
-def add_topic(subject_id):
-    user_id = session.get("user_id")
-    if not user_id:
-        return redirect("/login")
+@login_required
+def add_topic(user_id, subject_id):
     
     topic_name = request.form.get("topic_name")
     if not topic_name:
@@ -91,16 +90,14 @@ def add_topic(subject_id):
     
     
 @app.route("/<int:subject_id>/topics/<int:topic_id>/delete", methods=["POST"])
-def delete_topic(subject_id, topic_id):
+@login_required
+def delete_topic(user_id, subject_id, topic_id):
     remove_topic(topic_id)
     return redirect(f"/subjects/{subject_id}")
 
-
 @app.route("/subjects/<int:subject_id>/chapters/add", methods=["POST"])
-def add_chapter(subject_id):
-    user_id = session.get("user_id")
-    if not user_id:
-        return redirect("/login")
+@login_required
+def add_chapter(user_id, subject_id):
     
     chapter_name = request.form.get("chapter_name")
     if not chapter_name:
@@ -115,16 +112,15 @@ def add_chapter(subject_id):
     
   
 @app.route("/<int:subject_id>/chapters/<int:chapter_id>/delete", methods=["POST"])
+@login_required
 def delete_chapter(subject_id, chapter_id):
     remove_chapter(chapter_id)
     return redirect(f"/subjects/{subject_id}")  
 
 
 @app.route("/chapters/<int:chapter_id>/assign-topic", methods=["POST"])
-def assign_topic(chapter_id):
-    user_id = session.get("user_id")
-    if not user_id:
-        return redirect("/login")
+@login_required
+def assign_topic(user_id, chapter_id):
     
     topic_id = request.form.get("topic_id")
     subject_id = request.form.get("subject_id")
@@ -132,12 +128,10 @@ def assign_topic(chapter_id):
     assign_topic_chapter(topic_id, chapter_id)
     return redirect(f"/subjects/{subject_id}") 
     
-
+    
 @app.route("/create-session", methods=["GET", "POST"])
-def create_session():
-    user_id = session.get("user_id")
-    if not user_id:
-        return redirect("/login")
+@login_required
+def create_session(user_id):
     
     if request.method == "GET":
         return render_template("session.html")
@@ -200,7 +194,6 @@ def register():
     return redirect("/login")
     
 
-
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
@@ -217,7 +210,6 @@ def login():
     session["user_id"] = fetch_user_id(username) 
     return redirect("/")
         
-
 
 @app.route("/logout")
 def logout():

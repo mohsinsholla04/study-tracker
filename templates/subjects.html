@@ -2,8 +2,8 @@
 {% set show_nav = true %}
 {% block body %}
     <h1>Subjects</h1>
-    <button id="form_btn">Add Subject</button>
-    <form id="subject_form" action="/subjects/add" method="post">
+    <button id="add_form_btn">Add Subject</button>
+    <form id="add_subject_form" action="/subjects/add" method="post" hidden>
          <input name="subject_name" required autofocus autocomplete="off" type="text" placeholder="Enter The Subject Name">
          <button type="submit">Add Subject</button>
     </form>
@@ -12,13 +12,12 @@
             <li><a href="/subjects/{{ subject.id }}">{{ subject.name }}</a></li>
         {% endfor %}
     </ul>
+    <script src="{{ url_for('static', filename='subject.js') }}"></script>
     <script>
-        subjectForm = document.getElementById("subject_form");
-        subjectForm.style.display = "none";
-        btn = document.getElementById("form_btn");
-        btn.onclick = () => {
-            subjectForm.style.display = "block";
-            btn.style.display = "none";
-        };
+        document.addEventListener("DOMContentLoaded", () => {
+            const subjectForm = document.getElementById("add_subject_form");
+            const formBtn = document.getElementById("add_form_btn");
+            show_form(subjectForm, formBtn)
+        })
     </script>
 {% endblock %}
