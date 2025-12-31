@@ -4,62 +4,39 @@ from contextlib import contextmanager
 
 # ---------------- DB LAYER FUNCTIONS ----------------
 
-def get_subjects(user_id):
-    with open_db() as cur:
-        cur.execute("SELECT id, name FROM subjects WHERE user_id = ?", (user_id,))
-        return cur.fetchall()
-    
-
+# ****** Users ******* 
 def username_exists(username):
     with open_db() as cur:
-        cur.execute("SELECT * FROM users WHERE username = ?", (username,))
-        if cur.fetchone():
-            return True
-        return False
-    
-    
-def add_subject_db(subject_name, subject_user_id):
-    with open_db() as cur:
-        cur.execute("INSERT INTO subjects (user_id, name) VALUES (?, ?)", (subject_user_id, subject_name))   
+        cur.execute("SELECT 1 FROM users WHERE username = ?", (username,))
+        return cur.fetchone() is not None
 
 
-def delete_subject_db(subject_id):
+# Improvement: Also checks for password_hash
+def fetch_user_id(username):
     with open_db() as cur:
-        cur.execute("DELETE FROM subjects WHERE id = ?", (subject_id,))
-        
-        
-def subject_exists(subject_name, subject_user_id):
-    with open_db() as cur:
-        cur.execute("SELECT * FROM subjects WHERE name = ? AND user_id = ?", (subject_name, subject_user_id)) 
-        if cur.fetchone():
-            return True
-    return False   
+        cur.execute("SELECT id FROM users WHERE username = ?", (username,))
+        row = cur.fetchone()["id"]
+        return row if row else None
     
-    
-def get_chapters(subject_id):
+  
+def insert_user(username, password_hash):
     with open_db() as cur:
-        cur.execute("SELECT * FROM chapters WHERE subject_id = ?", (subject_id,))
-        return cur.fetchall()
+        cur.execute("INSERT INTO users (username, password_hash) VALUES (?, ?)", (username, password_hash))
 
+  
+def fetch_username(user_id):
+    with open_db() as cur:
+        cur.execute("SELECT username FROM users WHERE id = ?", (user_id,))
+        return cur.fetchone()["username"]
 
-def get_topics(subject_id):
+def fetch_hash(username):    
     with open_db() as cur:
-        cur.execute("SELECT t.*, COUNT(s.id) AS session_count, SUM(s.duration) AS total_duration, MIN(s.date) AS first_session_date FROM topics t LEFT JOIN sessions s ON t.id = s.topic_id WHERE t.subject_id = ? GROUP BY t.id;", (subject_id,))
-        return cur.fetchall()
-    
-        
-def get_subject_details(subject_id):
-    with open_db() as cur:
-        cur.execute("""SELECT sub.*,
-                    (SELECT COUNT(*) FROM topics WHERE subject_id = sub.id) AS topic_count,
-                    (SELECT COUNT(*) FROM sessions WHERE subject_id = sub.id) AS session_count,
-                    (SELECT SUM(sessions.duration) FROM sessions WHERE subject_id = sub.id) AS total_duration,
-                    (SELECT MAX(sessions.date) FROM sessions WHERE subject_id = sub.id) AS last_session_date
-                    FROM subjects sub WHERE sub.id = ?""", (subject_id,))       
-        return cur.fetchone()                 
+        cur.execute("SELECT password_hash FROM users WHERE username = ?", (username,))
+        return cur.fetchone()["password_hash"]
     
     
-def get_dashboard_summary(day_start, day_end, user_id):
+# ******* Sessions *******
+def fetch_dashboard_summary(day_start, day_end, user_id):
     with open_db() as cur:
         cur.execute("""SELECT 
                     SUM(duration) AS total_duration,
@@ -70,7 +47,7 @@ def get_dashboard_summary(day_start, day_end, user_id):
         return cur.fetchone()
     
     
-def get_dashboard_details(day_start, day_end, user_id):
+def fetch_dashboard(day_start, day_end, user_id):
     with open_db() as cur:
         cur.execute("""SELECT 
                         sub.name, 
@@ -85,95 +62,115 @@ def get_dashboard_details(day_start, day_end, user_id):
                         GROUP BY sub.id;
                     """, (day_start, day_end, user_id))
         return cur.fetchall()
-    
-    
-def add_user(username, password_hash):
-    with open_db() as cur:
-        cur.execute("INSERT INTO users (username, password_hash) VALUES (?, ?)", (username, password_hash))
-
-
-def get_subject_name(subject_id):
-    with open_db() as cur:
-        cur.execute("SELECT name FROM subjects WHERE id = ?", (subject_id,))
-
-
-def topic_exists(topic_name, subject_id):
-    with open_db() as cur:
-        cur.execute("SELECT * FROM topics WHERE subject_id = ? AND name = ?", (subject_id, topic_name))
-        if cur.fetchone():
-            return True
-    return False
-
-
-def chapter_exists(chapter_name, subject_id):
-    with open_db() as cur:
-        cur.execute("SELECT * FROM chapters WHERE subject_id = ? AND name = ?", (subject_id, chapter_name))
-        
-        
-def add_topic_db(topic_name, subject_id):
-    with open_db() as cur:
-        cur.execute("INSERT INTO topics (subject_id, name) VALUES (?, ?)", (subject_id, topic_name))
-
-
-def delete_topic_db(topic_id):
-    with open_db() as cur:
-        cur.execute("DELETE FROM topics WHERE id = ?", (topic_id,))
-def add_chapter_db(chapter_name, subject_id):
-    with open_db() as cur:
-        cur.execute("INSERT INTO chapters (subject_id, name) VALUES (?, ?)", (subject_id, chapter_name))
-        
-
-def delete_chapter_db(chapter_id):
-    with open_db() as cur:
-        cur.execute("DELETE FROM chapters WHERE id = ?", (chapter_id,))
-        
-        
-def assign_topic_chapter(topic_id, chapter_id):
-    with open_db() as cur:
-        cur.execute("UPDATE topics SET chapter_id = ? WHERE id = ?", (chapter_id, topic_id))
-        
-
-def add_session(subject_id, duration):
+  
+  
+def insert_session(subject_id, duration):
     with open_db() as cur:
         cur.execute("INSERT INTO sessions (subject_id, duration) VALUES (?, ?)", (subject_id, duration))
         return cur.lastrowid
     
     
-def add_session_topic(session_id, topic_id):
+def insert_session_topic(session_id, topic_id):
     with open_db() as cur:
         cur.execute("UPDATE sessions SET topic_id = ? WHERE id = ?", (topic_id, session_id))
         
-
-    
-    
-# Improvement: Also checks for password_hash
-def get_user_id(username):
+  
+# ******* Subjects ********
+def subject_exists(subject_name, subject_user_id):
     with open_db() as cur:
-        cur.execute("SELECT id FROM users WHERE username = ?", (username,))
-        return cur.fetchone()["id"]
-    
+        cur.execute("SELECT * FROM subjects WHERE name = ? AND user_id = ?", (subject_name, subject_user_id)) 
+        return cur.fetchone() is not None
 
-def get_subject_id(subject_name, user_id):
+
+def fetch_subjects(user_id):
+    with open_db() as cur:
+        cur.execute("SELECT id, name FROM subjects WHERE user_id = ?", (user_id,))
+        return cur.fetchall()
+    
+def fetch_subject_stats(subject_id):
+    with open_db() as cur:
+        cur.execute("""SELECT sub.*,
+                    (SELECT COUNT(*) FROM topics WHERE subject_id = sub.id) AS topic_count,
+                    (SELECT COUNT(*) FROM sessions WHERE subject_id = sub.id) AS session_count,
+                    (SELECT SUM(sessions.duration) FROM sessions WHERE subject_id = sub.id) AS total_duration,
+                    (SELECT MAX(sessions.date) FROM sessions WHERE subject_id = sub.id) AS last_session_date
+                    FROM subjects sub WHERE sub.id = ?""", (subject_id,))       
+        return cur.fetchone()                 
+
+
+def insert_subject(subject_name, subject_user_id):
+    with open_db() as cur:
+        cur.execute("INSERT INTO subjects (user_id, name) VALUES (?, ?)", (subject_user_id, subject_name))   
+
+
+def remove_subject(subject_id):
+    with open_db() as cur:
+        cur.execute("DELETE FROM subjects WHERE id = ?", (subject_id,))
+
+        
+def fetch_subject_id(subject_name, user_id):
     with open_db() as cur:
         cur.execute("SELECT id FROM subjects WHERE user_id = ? AND name = ?", (user_id, subject_name))
-        return cur.fetchone()["id"]
+        row = cur.fetchone()
+        return row["id"] if row else None
+    
+    
+# ****** Topics *******
+def fetch_topics_stats(subject_id):
+    with open_db() as cur:
+        cur.execute("SELECT t.*, COUNT(s.id) AS session_count, SUM(s.duration) AS total_duration, MIN(s.date) AS first_session_date FROM topics t LEFT JOIN sessions s ON t.id = s.topic_id WHERE t.subject_id = ? GROUP BY t.id;", (subject_id,))
+        return cur.fetchall()
+        
+    
+def topic_exists(topic_name, subject_id):
+    with open_db() as cur:
+        cur.execute("SELECT * FROM topics WHERE subject_id = ? AND name = ?", (subject_id, topic_name))
+        return cur.fetchone() is not None
+    
+    
+def insert_topic(topic_name, subject_id):
+    with open_db() as cur:
+        cur.execute("INSERT INTO topics (subject_id, name) VALUES (?, ?)", (subject_id, topic_name))
+
+
+def remove_topic(topic_id):
+    with open_db() as cur:
+        cur.execute("DELETE FROM topics WHERE id = ?", (topic_id,))
         
         
-def get_topic_id(topic_name, subject_id):
+def fetch_topic_id(topic_name, subject_id):
     with open_db() as cur:
         cur.execute("SELECT id FROM topics WHERE subject_id = ? AND name = ?", (subject_id, topic_name))
-        return cur.fetchone()["id"]
+        row = cur.fetchone()
+        return row["id"] if row else None
     
     
-def get_username(user_id):
+def assign_topic_chapter(topic_id, chapter_id):
     with open_db() as cur:
-        cur.execute("SELECT username FROM users WHERE id = ?", (user_id,))
-        return cur.fetchone()["username"]
+        cur.execute("UPDATE topics SET chapter_id = ? WHERE id = ?", (chapter_id, topic_id))
 
-def get_hash(username):    
+
+
+# ******** Chapters ********
+def fetch_chapters(subject_id):
     with open_db() as cur:
-        cur.execute("SELECT password_hash FROM users WHERE username = ?", (username,))
-        return cur.fetchone()["password_hash"]
+        cur.execute("SELECT * FROM chapters WHERE subject_id = ?", (subject_id,))
+        return cur.fetchall()
+
+
+def chapter_exists(chapter_name, subject_id):
+    with open_db() as cur:
+        cur.execute("SELECT * FROM chapters WHERE subject_id = ? AND name = ?", (subject_id, chapter_name))
+        return cur.fetchone() is not None 
+        
+def insert_chapter(chapter_name, subject_id):
+    with open_db() as cur:
+        cur.execute("INSERT INTO chapters (subject_id, name) VALUES (?, ?)", (subject_id, chapter_name))
+        
+
+def remove_chapter(chapter_id):
+    with open_db() as cur:
+        cur.execute("DELETE FROM chapters WHERE id = ?", (chapter_id,))
         
 
 # Initializes database schema

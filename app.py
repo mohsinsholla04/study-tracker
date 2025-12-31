@@ -13,14 +13,17 @@ Session(app)
 
 
 @app.route("/")
+# Shows dashboard 
 def index():
     user_id = session.get("user_id")
     if not user_id:
         return redirect("/login")
-    today_stats_summary, today_stats = get_today_stats(user_id)
-    week_stats_summary, week_stats = get_week_stats(user_id)
-    month_stats_summary, month_stats = get_month_stats(user_id)
-    return render_template("index.html", username=get_username(user_id), today_stats_summary=today_stats_summary, today_stats=today_stats, week_stats_summary=week_stats_summary, week_stats=week_stats, month_stats_summary=month_stats_summary, month_stats=month_stats)
+    
+    today_stats_summary, today_stats = get_dashboard_stats(1, user_id)
+    week_stats_summary, week_stats = get_dashboard_stats(7, user_id)
+    month_stats_summary, month_stats = get_dashboard_stats(30, user_id)
+    
+    return render_template("index.html", username=fetch_username(user_id), today_stats_summary=today_stats_summary, today_stats=today_stats, week_stats_summary=week_stats_summary, week_stats=week_stats, month_stats_summary=month_stats_summary, month_stats=month_stats)
 
 
 @app.route("/subjects")
@@ -29,8 +32,21 @@ def subjects():
     if not user_id:
         return redirect("/login")
     
-    subjects = get_subjects(user_id)
+    subjects = fetch_subjects(user_id)
     return render_template("subjects.html", subjects=subjects)
+
+
+@app.route("/subjects/<int:subject_id>")
+def subject(subject_id):
+    user_id = session.get("user_id")
+    if not user_id:
+        return redirect("/login")
+    
+    subject = get_subject_stats(subject_id)
+    chapters = fetch_chapters(subject_id) 
+    grouped_topics, ungrouped_topics= get_topics_stats(subject_id)
+    
+    return render_template("subject.html", subject=subject, chapters=chapters, grouped_topics=grouped_topics, ungrouped_topics=ungrouped_topics)
 
 
 @app.route("/subjects/add", methods=["POST"])
@@ -46,13 +62,13 @@ def add_subject():
     if subject_exists(subject_name, user_id):
         return render_template("error.html", msg="Subject already exists")
     
-    add_subject_db(subject_name, user_id)
+    insert_subject(subject_name, user_id)
     
     return redirect("/subjects")
 
 @app.route("/subjects/<int:subject_id>/delete", methods=["POST"])
 def delete_subject(subject_id):
-    delete_subject_db(subject_id)
+    remove_subject(subject_id)
     return redirect("/subjects")
 
 
@@ -69,14 +85,14 @@ def add_topic(subject_id):
     if topic_exists(topic_name, subject_id):
         return render_template("error.html", msg="Topic already exists")
     
-    add_topic_db(topic_name, subject_id)
+    insert_topic(topic_name, subject_id)
     
     return redirect(f"/subjects/{subject_id}")  
     
     
 @app.route("/<int:subject_id>/topics/<int:topic_id>/delete", methods=["POST"])
 def delete_topic(subject_id, topic_id):
-    delete_topic_db(topic_id)
+    remove_topic(topic_id)
     return redirect(f"/subjects/{subject_id}")
 
 
@@ -93,14 +109,14 @@ def add_chapter(subject_id):
     if chapter_exists(chapter_name, subject_id):
         return render_template("error.html", msg="Chapter already exists")
     
-    add_chapter_db(chapter_name, subject_id)
+    insert_chapter(chapter_name, subject_id)
     
     return redirect(f"/subjects/{subject_id}") 
     
   
 @app.route("/<int:subject_id>/chapters/<int:chapter_id>/delete", methods=["POST"])
 def delete_chapter(subject_id, chapter_id):
-    delete_chapter_db(chapter_id)
+    remove_chapter(chapter_id)
     return redirect(f"/subjects/{subject_id}")  
 
 
@@ -116,23 +132,6 @@ def assign_topic(chapter_id):
     assign_topic_chapter(topic_id, chapter_id)
     return redirect(f"/subjects/{subject_id}") 
     
-    
-@app.route("/subjects/<int:subject_id>")
-def subject(subject_id):
-    user_id = session.get("user_id")
-    if not user_id:
-        return redirect("/login")
-    
-    subject_details = get_subject_details(subject_id)
-    subject_details = dict(subject_details)
-    subject_details["last_session_date"] = datetime.strptime(subject_details["last_session_date"],  "%Y-%m-%d %H:%M:%S")
-    chapters = get_chapters(subject_id) 
-    topics = get_topics(subject_id)
-    topics = topics_dates_fixer(topics)
-    grouped_topics, ungrouped_topics = seperate_topics(topics)
-    
-    return render_template("subject.html", subject_details=subject_details, chapters=chapters, grouped_topics=grouped_topics, ungrouped_topics=ungrouped_topics)
-
 
 @app.route("/create-session", methods=["GET", "POST"])
 def create_session():
@@ -143,23 +142,36 @@ def create_session():
     if request.method == "GET":
         return render_template("session.html")
     
+    # Get subject_id if subject does not exist create it 
     subject_name = request.form.get("subject_name")
-    subject_id = get_verified_subject_id(subject_name, user_id)
-    
-    duration = int(request.form.get("duration"))
+    if not subject_name:
+        return redirect("/")
+    subject_id = fetch_subject_id(subject_name, user_id)
+    if subject_id is None:
+        insert_subject(subject_name, user_id)
+        subject_id = fetch_subject_id(subject_name, user_id)
+        
+    try:
+        duration = int(request.form.get("duration"))
+    except ValueError:
+        return redirect("/")
     
     topic_name = request.form.get("topic_name")
-    if topic_name:
-        session_id = add_session(subject_id, duration)
-        
-        topic_id = get_verified_topic_id(topic_name, subject_id)
-        add_session_topic(session_id, topic_id)
-    else:    
-        add_session(subject_id, duration)
+    session_id = insert_session(subject_id, duration)
+    if not topic_name:
+        return redirect("/") 
+    
+    # Get topic_id if topic does not exist create it 
+    topic_id = fetch_topic_id(topic_name, subject_id)
+    if topic_id is None:
+        insert_topic(topic_name, subject_id)
+        topic_id = fetch_topic_id(topic_name, subject_id)
+    
+    # Link them
+    insert_session_topic(session_id, topic_id)
         
     return redirect("/")
     
-
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -202,7 +214,7 @@ def login():
     if not check_user(username, password):
         return render_template("error.html", msg="Incorrect Credentials")
         
-    session["user_id"] = get_user_id(username) 
+    session["user_id"] = fetch_user_id(username) 
     return redirect("/")
         
 
@@ -212,6 +224,7 @@ def logout():
     session.clear()
     return redirect("/login")
 
+        
 if __name__ == "__main__":
     init_db()
     app.run(debug=True)

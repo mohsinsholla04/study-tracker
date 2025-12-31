@@ -1,21 +1,21 @@
 {% extends "layout.html" %}
 {% set show_nav = true %}
 {% block body %}
-    {% set subject_id = subject_details.id %}
+    {% set subject_id = subject.id %}
 
-    <h1>{{subject_details.name }}</h1>
+    <h1>{{subject.name }}</h1>
     <!-- This is temporary -->
-    {% if subject_details.total_duration and subject_details.session_count %}
-        <p>Total Duration: {{ subject_details.total_duration }} minutes</p>
-        <p>Total Sessions: {{ subject_details.session_count }}</p>
-        <p>Average Session Duration: {{ subject_details.total_duration / subject_details.session_count }} minutes</p>
-        <p>Last Studied On: {{ subject_details.last_session_date.strftime("%d %b, %Y at %I:%M %p") }}</p>
+    {% if subject.total_duration and subject.session_count %}
+        <p>Total Duration: {{ subject.total_duration }} minutes</p>
+        <p>Total Sessions: {{ subject.session_count }}</p>
+        <p>Average Session Duration: {{ subject.total_duration / subject.session_count }} minutes</p>
+        <p>Last Studied On: {{ subject.last_session_date.strftime("%d %b, %Y at %I:%M %p") }}</p>
     {% else %}
         <p>Total Duration: 0 minutes</p>
         <p>Total Sessions: 0 sessions</p>
         <p>Last Studied On: Never</p>
     {% endif %}
-    <p>Total Number Of Topics: {{ subject_details.topic_count }}</p>
+    <p>Total Number Of Topics: {{ subject.topic_count }}</p>
 
     <button id="delete_subject">Delete Subject</button>
     <form id="subject_delete_form" action="/subjects/{{ subject_id}}/delete" method="post">
