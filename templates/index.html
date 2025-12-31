@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% set show_nav = true %}
+{% block body %} 
+    <h2>Hey, {{ username }}!</h2>
+    <h1>DASHBOARD</h1>
+    <h2>Today</h2>
+    <h4>Summary</h4>
+    {% set stats_summary = today_stats_summary %}
+    {% include "stats_summary.html" %}
+    <h4>Detailed</h4>
+    {% set stats = today_stats %}
+    {% include "stats.html" %}
+    <h2>Last 7 days</h2>
+    <h4>Summary</h4>
+    {% set stats_summary = week_stats_summary %}
+    {% include "stats_summary.html" %}
+    <h4>Detailed</h4>
+    {% set stats = week_stats %}
+    {% include "stats.html" %}
+    <h2>Last 30 days</h2>
+    <h4>Summary</h4>
+    {% set stats_summary = month_stats_summary %}
+    {% include "stats_summary.html" %}
+    <h4>Detailed</h4>
+    {% set stats = month_stats %}
+    {% include "stats.html" %}
+{% endblock %}

@@ -1,0 +1,7 @@
+__pycache__
+flask_session
+static
+venv
+plan.txt
+requirements.txt
+study_tracker.db

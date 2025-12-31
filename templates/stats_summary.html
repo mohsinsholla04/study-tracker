@@ -1,0 +1,7 @@
+{% if stats_summary.total_duration and stats_summary.total_sessions %}
+    <p>Total time you studied: {{ stats_summary.total_duration }} minutes</p>
+    <p>No of sessions you had: {{ stats_summary.total_sessions }} sessions</p>
+    <p>Average session duration: {{ stats_summary.total_duration / stats_summary.total_sessions }} minutes</p>
+{% else %}
+    <p>You have not studied today.</p>
+{% endif %}

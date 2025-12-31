@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% set show_nav = true %}
+{% block body %}
+    <h1>Subjects</h1>
+    <button id="form_btn">Add Subject</button>
+    <form id="subject_form" action="/subjects/add" method="post">
+         <input name="subject_name" required autofocus autocomplete="off" type="text" placeholder="Enter The Subject Name">
+         <button type="submit">Add Subject</button>
+    </form>
+    <ul>
+        {% for subject in subjects %}
+            <li><a href="/subjects/{{ subject.id }}">{{ subject.name }}</a></li>
+        {% endfor %}
+    </ul>
+    <script>
+        subjectForm = document.getElementById("subject_form");
+        subjectForm.style.display = "none";
+        btn = document.getElementById("form_btn");
+        btn.onclick = () => {
+            subjectForm.style.display = "block";
+            btn.style.display = "none";
+        };
+    </script>
+{% endblock %}

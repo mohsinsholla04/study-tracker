@@ -1,0 +1,20 @@
+<table>
+        <tr>
+            <th>Subjects</th>
+            <th>Topics</th>
+            <th>No Of Sessions</th>
+            <th>Time Studied</th>
+        </tr>
+        {% for subject in stats %}
+            <tr>
+                <td>{{ subject.name }}</td>
+                <td>{{ subject.subject_topics or "No Topics"}}</td>
+                {% if subject.topicless_session_count %}
+                    <td>{{ subject.total_session_count }} ({{ subject.topicless_session_count }} topicless)</td>
+                {% else %}
+                    <td>{{ subject.total_session_count }}</td>
+                {% endif %}
+                <td>{{ subject.total_duration }} minutes</td>
+            </tr>
+        {% endfor %}
+    </table>

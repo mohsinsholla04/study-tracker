@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Study Tracker</title>
+    </head>
+    <body>
+        {% if show_nav %}
+            {% include "nav.html" %}
+        {% endif %}
+        {% block body %}
+
+        {% endblock %}
+    </body>
+</html>

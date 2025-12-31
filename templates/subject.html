@@ -1,0 +1,117 @@
+{% extends "layout.html" %}
+{% set show_nav = true %}
+{% block body %}
+    {% set subject_id = subject_details.id %}
+
+    <h1>{{subject_details.name }}</h1>
+    <!-- This is temporary -->
+    {% if subject_details.total_duration and subject_details.session_count %}
+        <p>Total Duration: {{ subject_details.total_duration }} minutes</p>
+        <p>Total Sessions: {{ subject_details.session_count }}</p>
+        <p>Average Session Duration: {{ subject_details.total_duration / subject_details.session_count }} minutes</p>
+        <p>Last Studied On: {{ subject_details.last_session_date.strftime("%d %b, %Y at %I:%M %p") }}</p>
+    {% else %}
+        <p>Total Duration: 0 minutes</p>
+        <p>Total Sessions: 0 sessions</p>
+        <p>Last Studied On: Never</p>
+    {% endif %}
+    <p>Total Number Of Topics: {{ subject_details.topic_count }}</p>
+
+    <button id="delete_subject">Delete Subject</button>
+    <form id="subject_delete_form" action="/subjects/{{ subject_id}}/delete" method="post">
+        <p>Are you sure you want to delete this subject ?</p>
+        <button type="submit">Confirm</button>
+    </form>
+    <ul>
+        <h4>Chapters</h4>
+        <button id="add_chapter_btn">Add Chapter</button>
+        <form id="chapter_form" action="/subjects/{{ subject_id }}/chapters/add" method="post">
+            <input name="chapter_name" required autofocus autocomplete="off" type="text" placeholder="Enter The Chapter Name">
+            <button type="submit">Add Chapter</button>
+        </form>
+        {% for chapter in chapters %}
+        <li>
+            <details>
+                <summary>{{ chapter.name }}</summary>
+                    <ul>
+                        {% for topic in grouped_topics %}
+                            {% if topic.chapter_id == chapter.id %}
+                                {% include "topic_details.html" %}
+                            {% endif %} 
+                        {% endfor %}
+                    </ul>
+                    <form action="/chapters/{{ chapter.id }}/assign-topic" method="post">
+                        <input type="hidden" name="subject_id" value="{{ subject_id }}">
+                        <select name="topic_id">
+                            <option value="" selected disabled>--- Select a topic ---</option>
+                            {% for topic in ungrouped_topics %}
+                                <option value="{{ topic.id }}">{{ topic.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit">Assign Topic</button>
+                    </form>
+                    <button data-target="chapter-form-{{ chapter.id }}" class="delete_chapter_btn">Delete Chapter</button>
+                    <form id="chapter-form-{{ chapter.id }}" action="/{{ subject_id }}/chapters/{{ chapter.id }}/delete" method="post" hidden>
+                        <p>Are you sure you want to delete this chapter ?</p>
+                        <button type="submit">Confirm</button>
+                    </form>
+                </details>
+            </li>
+        {% endfor %}
+        <h4>Ungrouped topics</h4>
+        <button id="add_topic_btn">Add Topic</button>
+        <form id="topic_form" action="/subjects/{{ subject_id }}/topics/add" method="post">
+            <input name="topic_name" required autofocus autocomplete="off" type="text" placeholder="Enter The Topic Name">
+            <button type="submit">Add Topic</button>
+        </form>
+        {% for topic in ungrouped_topics %}
+            {% include "topic_details.html" %}
+        {% endfor %}
+    </ul>
+    <script>
+        // This is temporary and needs serious improvement
+        topicForm = document.getElementById("topic_form");
+        topicForm.style.display = "none";
+        topicBtn = document.getElementById("add_topic_btn");
+        topicBtn.onclick = () => {
+            topicForm.style.display = "block";
+            topicBtn.style.display = "none";
+        };
+
+
+        chapterForm = document.getElementById("chapter_form");
+        chapterForm.style.display = "none";
+        chapterBtn = document.getElementById("add_chapter_btn");
+        chapterBtn.onclick = () => {
+            chapterForm.style.display = "block";
+            chapterBtn.style.display = "none";
+        };
+
+        // Deletion 
+        subjDeleteForm = document.getElementById("subject_delete_form");
+        subjDeleteForm.style.display = "none";
+        subjDeleteBtn = document.getElementById("delete_subject");
+        subjDeleteBtn.onclick = () => {
+            subjDeleteForm.style.display = "block";
+            subjDeleteBtn.style.display = "none";
+        };
+
+         
+        
+        document.querySelectorAll(".delete_chapter_btn").forEach(chapBtn => {
+            chapBtn.onclick = () => {
+                const chapFormId = chapBtn.dataset.target
+                document.getElementById(chapFormId).hidden = false;
+                chapBtn.hidden = true;
+            };
+        });
+        
+        document.querySelectorAll(".delete_topic_btn").forEach(topicBtn => {
+            topicBtn.onclick = () => {
+                const topicFormId = topicBtn.dataset.target
+                document.getElementById(topicFormId).hidden = false;
+                topicBtn.hidden = true;
+            };
+        });
+    </script>
+{% endblock %}
