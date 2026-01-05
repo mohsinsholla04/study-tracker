@@ -100,7 +100,8 @@ def fetch_subject_stats(subject_id):
 
 def insert_subject(subject_name, subject_user_id):
     with open_db() as cur:
-        cur.execute("INSERT INTO subjects (user_id, name) VALUES (?, ?)", (subject_user_id, subject_name))   
+        cur.execute("INSERT INTO subjects (user_id, name) VALUES (?, ?)", (subject_user_id, subject_name))  
+        return cur.lastrowid 
 
 
 def remove_subject(subject_id):
@@ -131,7 +132,7 @@ def topic_exists(topic_name, subject_id):
 def insert_topic(topic_name, subject_id):
     with open_db() as cur:
         cur.execute("INSERT INTO topics (subject_id, name) VALUES (?, ?)", (subject_id, topic_name))
-
+        return cur.lastrowid
 
 def remove_topic(topic_id):
     with open_db() as cur:

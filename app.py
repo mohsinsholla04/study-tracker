@@ -142,24 +142,22 @@ def create_session(user_id):
         return redirect("/")
     subject_id = fetch_subject_id(subject_name, user_id)
     if subject_id is None:
-        insert_subject(subject_name, user_id)
-        subject_id = fetch_subject_id(subject_name, user_id)
+        subject_id = insert_subject(subject_name, user_id)
         
     try:
         duration = int(request.form.get("duration"))
     except ValueError:
         return redirect("/")
     
-    topic_name = request.form.get("topic_name")
     session_id = insert_session(subject_id, duration)
+    topic_name = request.form.get("topic_name")
     if not topic_name:
         return redirect("/") 
     
     # Get topic_id if topic does not exist create it 
     topic_id = fetch_topic_id(topic_name, subject_id)
     if topic_id is None:
-        insert_topic(topic_name, subject_id)
-        topic_id = fetch_topic_id(topic_name, subject_id)
+        topic_id = insert_topic(topic_name, subject_id)
     
     # Link them
     insert_session_topic(session_id, topic_id)
