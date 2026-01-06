@@ -1,10 +1,18 @@
 {% extends "layout.html" %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+{% endblock %}
+
 {% block body %}
-    <form action="/register" method="post">
-        <input name="username" required autofocus autocomplete="off" type="text" placeholder="Enter The Username">
-        <input name="password" required type="password" placeholder="Enter The Password">
-        <input name="confirm_pass" required type="password" placeholder="Confirm The Password">
-        <button type="submit">Register</button>
+<h1>InsightStudy</h1>
+<div class="auth-container">
+    <form action="/register" method="post" class="auth-form">
+        <input class="input-field" name="username" required autofocus autocomplete="off" type="text" placeholder="Enter The Username">
+        <input class="input-field" name="password" required type="password" placeholder="Enter The Password">
+        <input class="input-field" name="confirm_pass" required type="password" placeholder="Confirm The Password">
+        <button type="submit" class="submit-btn">Register</button>
     </form>
-    <a href="/login">Click to login</a>
+    <a href="/login">Click Here To Login</a>
+</div>
 {% endblock %}
