@@ -1,7 +1,18 @@
 {% if stats_summary.total_duration and stats_summary.total_sessions %}
-    <p>Total time you studied: {{ stats_summary.total_duration }} minutes</p>
-    <p>No of sessions you had: {{ stats_summary.total_sessions }} sessions</p>
-    <p>Average session duration: {{ stats_summary.total_duration / stats_summary.total_sessions }} minutes</p>
+    <div class="summary-table">
+        <div class="stat-group">
+            <p class="stat">{{ stats_summary.total_duration }}</p>
+            <p class="description">MINUTES STUDIED</p>
+        </div>
+        <div class="stat-group">
+            <p class="stat">{{ (stats_summary.total_duration / stats_summary.total_sessions) | int }}</p>
+            <p class="description">SESSION AVERAGE</p>
+        </div>
+        <div class="stat-group">
+            <p class="stat">{{ stats_summary.total_sessions }}</p>
+            <p class="description">SESSIONS COMPLETED</p>
+        </div>
+    </div>
 {% else %}
     <p>You have not studied.</p>
 {% endif %}

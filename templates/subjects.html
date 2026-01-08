@@ -1,22 +1,32 @@
 {% extends "layout.html" %}
 {% set show_nav = true %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/subjects.css') }}">
+{% endblock %}
 {% block body %}
-    <h1>Subjects</h1>
-    <button id="add_form_btn">Add Subject</button>
-    <form id="add_subject_form" action="/subjects/add" method="post" hidden>
-         <input name="subject_name" required autofocus autocomplete="off" type="text" placeholder="Enter The Subject Name">
-         <button type="submit">Add Subject</button>
-    </form>
-    <ul>
-        {% for subject in subjects %}
+    <div class="content-container">
+        <h1>Subjects</h1>
+        <button id="add-form-btn">+</button>
+        <form id="add-subject-form" action="/subjects/add" method="post" hidden>
+            <div id="form-items-container">
+                <div id="input-container">
+                    <input name="subject_name" id="subject-name" required autofocus autocomplete="off" type="text" placeholder="Enter The Name Of The Subject">
+                </div>
+                <button type="submit">Add Subject</button>
+            </div>
+        </form>
+        <ul class="subjects-list">
+            {% for subject in subjects %}
             <li><a href="/subjects/{{ subject.id }}">{{ subject.name }}</a></li>
-        {% endfor %}
-    </ul>
+            {% endfor %}
+        </ul>
+    </div>
     <script src="{{ url_for('static', filename='subject.js') }}"></script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            const subjectForm = document.getElementById("add_subject_form");
-            const formBtn = document.getElementById("add_form_btn");
+            const subjectForm = document.getElementById("add-subject-form");
+            const formBtn = document.getElementById("add-form-btn");
             show_form(subjectForm, formBtn)
         })
     </script>

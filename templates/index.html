@@ -1,27 +1,45 @@
 {% extends "layout.html" %}
 {% set show_nav = true %}
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock %}
 {% block body %} 
-    <h2>Hey, {{ username }}!</h2>
-    <h1>DASHBOARD</h1>
-    <h2>Today</h2>
-    <h4>Summary</h4>
-    {% set stats_summary = today_stats_summary %}
-    {% include "stats_summary.html" %}
-    <h4>Detailed</h4>
-    {% set stats = today_stats %}
-    {% include "stats.html" %}
-    <h2>Last 7 days</h2>
-    <h4>Summary</h4>
-    {% set stats_summary = week_stats_summary %}
-    {% include "stats_summary.html" %}
-    <h4>Detailed</h4>
-    {% set stats = week_stats %}
-    {% include "stats.html" %}
-    <h2>Last 30 days</h2>
-    <h4>Summary</h4>
-    {% set stats_summary = month_stats_summary %}
-    {% include "stats_summary.html" %}
-    <h4>Detailed</h4>
-    {% set stats = month_stats %}
-    {% include "stats.html" %}
+    <div class="container">
+        <h1>DASHBOARD</h1>
+        <h2>Summary</h2>
+        <div class="summaries-container">
+            <div class="summary-container">
+                <h4>Today</h4>
+                {% set stats_summary = today_stats_summary %}
+                {% include "stats_summary.html" %}
+            </div>
+            <div class="summary-container">
+                <h4>Last 7 days</h4>
+                {% set stats_summary = week_stats_summary %}
+                {% include "stats_summary.html" %}
+            </div>
+            <div class="summary-container">
+                <h4>Last 30 days</h4>
+                {% set stats_summary = month_stats_summary %}
+                {% include "stats_summary.html" %}
+            </div>
+        </div>
+        <div class="stats-container">
+            <h2>Today</h2>
+            <div class="table-container">
+                {% set stats = today_stats %}
+                {% include "stats.html" %}
+            </div>
+            <h2>Last 7 days</h2>
+            <div class="table-container">
+                {% set stats = week_stats %}
+                {% include "stats.html" %}
+            </div>
+            <h2>Last 30 days</h2>
+            <div class="table-container">
+                {% set stats = month_stats %}
+                {% include "stats.html" %}
+            </div>
+        </div>
+    </div>
 {% endblock %}
