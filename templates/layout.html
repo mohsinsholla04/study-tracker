@@ -7,11 +7,40 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/session.css' )}}">
     {% block styles %}{% endblock %}
     <body>
         {% if show_nav %}
             {% include "nav.html" %}
+            <div class="create-session-container">
+                <div class="session-form-container">
+                    <button class="hide">&times;</button>
+                    <h2>Session Form</h2>
+                    <form action="/create-session" method="post" class="session-form">
+                        <input name="subject_name" required autofocus autocomplete="off" type="text" placeholder="Enter Name Of Subject">
+                        <input name="topic_name" autocomplete="off" type="text" placeholder="Enter Name Of Topic (Optional)">
+                        <input name="duration" min="0" step="1" required type="number" placeholder="For How Many Minutes Did You Study ?">
+                        <button type="submit">Create Session</button>
+                    </form>
+                </div>
+            </div>
         {% endif %}
         {% block body %}{% endblock %}
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const sessionBtn = document.querySelector(".create-session");
+                sessionBtn.onclick = () => {
+                    const createSessionDiv = document.querySelector(".create-session-container");
+                    createSessionDiv.style.display = "flex";
+                };
+                
+                const hideBtn = document.querySelector(".hide");
+                hideBtn.onclick = () => {
+                    const createSessionDiv = document.querySelector(".create-session-container");
+                    console.log("clicked")
+                    createSessionDiv.style.display = "none";
+                }
+            })
+        </script>
     </body>
 </html>

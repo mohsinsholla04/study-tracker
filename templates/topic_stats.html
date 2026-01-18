@@ -1,15 +1,39 @@
-<details>
-    <summary>{{ topic.name  }}</summary>
-    {% if topic.first_session_date %}
-        <p>First Studied On: {{ topic.first_session_date.strftime("%d %b, %Y at %I:%M %p") }}</p>
-        <p>Total Sessions: {{ topic.session_count }}</p>
-        <p>Total Duration: {{ topic.total_duration }} minutes</p>
-    {% else %}
-        <p>Not Studied</p>
-    {% endif %}
-    <button class="delete_topic_btn" data-target="topic-form-{{ topic.id }}">Delete Topic</button>
-    <form id="topic-form-{{ topic.id }}" action="/{{ subject_id }}/topics/{{ topic.id }}/delete" method="post" hidden>
-        <p>Are you sure you want to delete this topic ?</p>
-        <button type="submit">Confirm</button>
-    </form>
-</details>
+    <details class="topic-pill">
+        <summary>{{ topic.name  }}</summary>
+        {% if topic.first_session_date %}
+            <div class="summary-table-container">
+                <div class="summary-table">
+                    <div class="stat-group">
+                        <p class="stat">{{ topic.total_duration }}</p>
+                        <p class="description">MINUTES STUDIED</p>
+                    </div>
+                    <div class="stat-group">
+                        <p class="stat">{{ topic.session_count }}</p>
+                        <p class="description">SESSIONS COMPLETED</p>
+                    </div>
+                    <div class="stat-group">
+                        <p class="stat">{{ (topic.total_duration / topic.session_count) | int }} MIN</p>
+                        <p class="description">SESSION AVERAGE</p>
+                    </div>
+                    <div class="stat-group">
+                        <p class="stat">{{ topic.first_session_date.strftime("%d %b, %Y at %I:%M %p") }}</p>
+                        <p class="description">FIRST STUDIED</p>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <p class="not-studied">You Have NOT STUDIED This Yet.</p>
+        {% endif %}
+        <div class="delete-btn-container">
+            <button class="delete_topic_btn delete-button" data-target="topic-form-cont-{{ topic.id }}">Delete Topic</button>
+        </div>
+        <div class="overlay" id="topic-form-cont-{{ topic.id }}">
+            <div class="caution-container">
+                <button class="hide">&times;</button>
+                <form action="/{{ subject_id }}/topics/{{ topic.id }}/delete" method="post" class="delete-form">
+                    <p>Are you sure you want to delete this topic ?</p>
+                    <button type="submit">Confirm</button>
+                </form>
+            </div>  
+        </div>
+    </details>

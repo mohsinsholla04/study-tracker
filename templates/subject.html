@@ -1,72 +1,128 @@
 {% extends "layout.html" %}
 {% set show_nav = true %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/subject.css') }}">
+{% endblock %}
 {% block body %}
     {% set subject_id = subject.id %}
-
-    <h1>{{subject.name }}</h1>
-    <!-- This is temporary -->
-    {% if subject.total_duration and subject.session_count %}
-        <p>Total Duration: {{ subject.total_duration }} minutes</p>
-        <p>Total Sessions: {{ subject.session_count }}</p>
-        <p>Average Session Duration: {{ subject.total_duration / subject.session_count }} minutes</p>
-        <p>Last Studied On: {{ subject.last_session_date.strftime("%d %b, %Y at %I:%M %p") }}</p>
-    {% else %}
-        <p>Total Duration: 0 minutes</p>
-        <p>Total Sessions: 0 sessions</p>
-        <p>Last Studied On: Never</p>
-    {% endif %}
-    <p>Total Number Of Topics: {{ subject.topic_count }}</p>
-
-    <button id="delete_subject">Delete Subject</button>
-    <form id="subject_delete_form" action="/subjects/{{ subject_id}}/delete" method="post" hidden>
-        <p>Are you sure you want to delete this subject ?</p>
-        <button type="submit">Confirm</button>
-    </form>
-    <h4>Chapters</h4>
-    <button id="add_chapter_btn">Add Chapter</button>
-    <form id="chapter_form" action="/subjects/{{ subject_id }}/chapters/add" method="post" hidden>
-        <input name="chapter_name" required autocomplete="off" type="text" placeholder="Enter The Chapter Name">
-        <button type="submit">Add Chapter</button>
-    </form>
-    <ul>
-        {% for chapter in chapters %}
-        <li>
-            <details>
-                <summary>{{ chapter.name }}</summary>
-                    <ul>
-                        {% for topic in grouped_topics %}
-                            {% if topic.chapter_id == chapter.id %}
-                                {% include "topic_stats.html" %}
-                            {% endif %} 
-                        {% endfor %}
-                    </ul>
-                    <form action="/chapters/{{ chapter.id }}/assign-topic" method="post">
-                        <input type="hidden" name="subject_id" value="{{ subject_id }}">
-                        <select name="topic_id">
-                            <option value="" selected disabled>--- Select a topic ---</option>
-                            {% for topic in ungrouped_topics %}
-                                <option value="{{ topic.id }}">{{ topic.name }}</option>
+    <div class="container">
+        <h1>{{subject.name }}</h1>
+        <div class="summary-container">
+            {% if subject.total_duration and subject.session_count %}
+                <div class="stat-group">
+                    <p class="stat">{{ subject.total_duration }}</p>
+                    <p class="description">MINUTES STUDIED</p>
+                </div>
+                <div class="stat-group">
+                    <p class="stat">{{ subject.session_count }}</p>
+                    <p class="description">SESSIONS COMPLETED</p>
+                </div>
+                <div class="stat-group">
+                    <p class="stat">{{ subject.last_session_date.strftime("%d %b, %Y at %I:%M %p") }}</p>
+                    <p class="description">LAST STUDIED</p>
+                </div>
+                <div class="stat-group">
+                    <p class="stat">{{ (subject.total_duration / subject.session_count) | int }} MIN</p>
+                    <p class="description">SESSION AVERAGE</p>
+                </div>
+                <div class="stat-group">
+                    <p class="stat">{{ subject.topic_count }}</p>
+                    <p class="description">TOPICS</p>
+                </div>
+            {% else %}
+                <p>You haven't Studied It</p>
+            {% endif %}
+        </div>
+        <div class="chapters-container">
+            <h2>Chapters</h2>
+            <button id="add-chapter-btn" class="add-chapter">+</button>
+            <form id="chapter-form" action="/subjects/{{ subject_id }}/chapters/add" method="post" hidden>
+                <div class="form-items-container">
+                    <div class="input-container">
+                        <input name="chapter_name" id="chapter-name" required autocomplete="off" type="text" placeholder="Enter The Chapter Name">
+                    </div>
+                <button type="submit">Add Chapter</button>
+                </div>
+            </form>
+            <ul class="chapters-list">
+                {% for chapter in chapters %}
+                <li class="chapter-container">
+                    <details>
+                        <summary class="chapter-pill">{{ chapter.name }}</summary>
+                            {% for topic in grouped_topics %}
+                                {% if topic.chapter_id == chapter.id %}
+                                    {% include "topic_stats.html" %}
+                                {% endif %} 
                             {% endfor %}
-                        </select>
-                        <button type="submit">Assign Topic</button>
-                    </form>
-                    <button data-target="chapter-form-{{ chapter.id }}" class="delete_chapter_btn">Delete Chapter</button>
-                    <form id="chapter-form-{{ chapter.id }}" action="/{{ subject_id }}/chapters/{{ chapter.id }}/delete" method="post" hidden>
-                        <p>Are you sure you want to delete this chapter ?</p>
-                        <button type="submit">Confirm</button>
-                    </form>
-                </details>
-            </li>
-        {% endfor %}
-    </ul>
-    <h4>Ungrouped topics</h4>
-    <button id="add_topic_btn">Add Topic</button>
-    <form id="topic_form" action="/subjects/{{ subject_id }}/topics/add" method="post" hidden>
-        <input name="topic_name" required autocomplete="off" type="text" placeholder="Enter The Topic Name">
-        <button type="submit">Add Topic</button>
-    </form>
-    {% for topic in ungrouped_topics %}
-        {% include "topic_stats.html" %}
-    {% endfor %}
+                            <div class="assign-form-cont">
+                                <form action="/chapters/{{ chapter.id }}/assign-topic" method="post">
+                                    <input type="hidden" name="subject_id" value="{{ subject_id }}">
+                                    <input type="hidden" name="topic_id" value="">
+                                    <div class="custom-select">
+                                        <div class="select-trigger">Select A Topic</div>
+                                        <ul class="options-list">
+                                            {% for topic in ungrouped_topics %}
+                                            <li class="option" data-value="{{ topic.id }}">{{ topic.name }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    <button type="submit">Assign Topic</button>
+                                    <!-- <select name="topic_id" required>
+                                        <option value="" selected disabled>Select a topic  </option>
+                                        {% for topic in ungrouped_topics %}
+                                        <option value="{{ topic.id }}">{{ topic.name }}</option>
+                                        {% endfor %}
+                                    </select> -->
+                                </form>
+                            </div>
+                            <div class="delete-btn-container">
+                                <button data-target="chapter-form-cont-{{ chapter.id }}" class="delete_chapter_btn delete-button">Delete Chapter</button>
+                            </div>
+                            <div class="overlay" id="chapter-form-cont-{{ chapter.id }}">
+                                <div class="caution-container">
+                                    <button class="hide">&times;</button>
+                                    <form action="/{{ subject_id }}/chapters/{{ chapter.id }}/delete" method="post" hidden class="delete-form">
+                                        <p>Are you sure you want to delete this chapter ?</p>
+                                        <button type="submit">Confirm</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </details>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="ungrouped-topics-container">
+            <h2>Ungrouped topics</h2>
+            <button id="add-topic-btn">+</button>
+            <form id="topic-form" action="/subjects/{{ subject_id }}/topics/add" method="post" hidden>
+                <div class="form-items-container">
+                    <div class="input-container">
+                        <input name="topic_name" id="topic-name" required autocomplete="off" type="text" placeholder="Enter The Topic Name">
+                    </div>
+                    <button type="submit">Add Topic</button>
+                </div>
+            </form>
+            <div class="topics-list">
+                {% for topic in ungrouped_topics %}
+                    {% include "topic_stats.html" %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="delete-btn-container">
+        <button id="delete-subject">Delete Subject</button>
+    </div>
+    <div class="overlay" id="subject-overlay">
+        <div class="caution-container">
+            <button class="hide">&times;</button>
+            <form id="subject-delete-form" class="delete-form" action="/subjects/{{ subject_id}}/delete" method="post" hidden>
+                <p>Are you sure you want to delete this subject ?</p>
+                <button type="submit">Confirm</button>
+            </form>
+        </div>
+    </div>
+
     <script src="{{ url_for('static', filename='subject.js') }}"></script>
 {% endblock %}

@@ -5,12 +5,12 @@
             <p class="description">MINUTES STUDIED</p>
         </div>
         <div class="stat-group">
-            <p class="stat">{{ (stats_summary.total_duration / stats_summary.total_sessions) | int }}</p>
-            <p class="description">SESSION AVERAGE</p>
-        </div>
-        <div class="stat-group">
             <p class="stat">{{ stats_summary.total_sessions }}</p>
             <p class="description">SESSIONS COMPLETED</p>
+        </div>
+        <div class="stat-group">
+            <p class="stat">{{ (stats_summary.total_duration / stats_summary.total_sessions) | int }} MIN</p>
+            <p class="description">SESSION AVERAGE</p>
         </div>
     </div>
 {% else %}

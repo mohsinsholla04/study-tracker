@@ -73,6 +73,7 @@ def delete_subject(user_id, subject_id):
     remove_subject(subject_id)
     return redirect("/subjects")
 
+
 @app.route("/subjects/<int:subject_id>/topics/add", methods=["POST"])
 @login_required
 def add_topic(user_id, subject_id):
@@ -95,6 +96,7 @@ def delete_topic(user_id, subject_id, topic_id):
     remove_topic(topic_id)
     return redirect(f"/subjects/{subject_id}")
 
+
 @app.route("/subjects/<int:subject_id>/chapters/add", methods=["POST"])
 @login_required
 def add_chapter(user_id, subject_id):
@@ -113,7 +115,7 @@ def add_chapter(user_id, subject_id):
   
 @app.route("/<int:subject_id>/chapters/<int:chapter_id>/delete", methods=["POST"])
 @login_required
-def delete_chapter(subject_id, chapter_id):
+def delete_chapter(user_id, subject_id, chapter_id):
     remove_chapter(chapter_id)
     return redirect(f"/subjects/{subject_id}")  
 
@@ -129,13 +131,9 @@ def assign_topic(user_id, chapter_id):
     return redirect(f"/subjects/{subject_id}") 
     
     
-@app.route("/create-session", methods=["GET", "POST"])
+@app.route("/create-session", methods=["POST"])
 @login_required
 def create_session(user_id):
-    
-    if request.method == "GET":
-        return render_template("session.html")
-    
     # Get subject_id if subject does not exist create it 
     subject_name = request.form.get("subject_name")
     if not subject_name:

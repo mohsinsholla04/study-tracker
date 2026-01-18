@@ -1,9 +1,0 @@
-{% extends "layout.html" %}
-{% block body %}
-    <form action="/create-session" method="post">
-        <input name="subject_name" required autofocus autocomplete="off" type="text" placeholder="Enter Name Of Subject">
-        <input name="topic_name" autocomplete="off" type="text" placeholder="Enter Name Of Topic (Optional)">
-        <input name="duration" min="0" step="1" required type="number" placeholder="For How Many Minutes Did You Study ?">
-        <button type="submit">Create Session</button>
-    </form>
-{% endblock %}
