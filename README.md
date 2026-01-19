@@ -1,66 +1,45 @@
-Study Tracker
+# Study Tracker
 
-A full-stack web application for logging study sessions and generating structured insights from study data.
-Users record what they study, and the application analyzes this data to present clear, relevant statistics.
+A full-stack web application for logging study sessions and generating structured insights from study data. Users record what they study, and the application analyzes this data to present clear, relevant statistics.
 
-🚀 Features
+## 🚀 Features
 
-Study Session Logging
+### Study Session Logging
+- Record sessions with subject, chapter, topic, duration, and date  
+- Captures real study activity with precise context
 
-Record sessions with subject, chapter, topic, duration, and date
+### Hierarchical Study Structure
+- **Subjects → Chapters → Topics**
+- Enforced relationships ensure clean, meaningful data
+- Enables accurate aggregation at every level
 
-Captures real study activity with precise context
+### Statistics & Insights
+- Total study time per subject, chapter, and topic
+- Session counts and time distribution
+- Recent activity summaries
 
-Hierarchical Study Structure
+### Dashboard Overview
+- Centralized view of study behavior
+- Highlights trends and imbalances clearly
 
-Subjects → Chapters → Topics
+### Minimal & Responsive UI
+- Built using pure HTML, CSS, and JavaScript
+- Lightweight and fast by design
 
-Enforced relationships ensure clean, meaningful data
+## 🛠 Tech Stack
 
-Enables accurate aggregation at every level
+- **Backend:** Python (Flask)
+- **Database:** SQLite
+- **Frontend:** HTML, CSS, JavaScript
+- **Version Control:** Git & GitHub
 
-Statistics & Insights
-
-Total study time per subject, chapter, and topic
-
-Session counts and time distribution
-
-Recent activity summaries
-
-Dashboard Overview
-
-Centralized view of study behavior
-
-Makes trends and imbalances easy to spot
-
-Minimal, Responsive UI
-
-Built using pure HTML, CSS, and JavaScript
-
-Lightweight and fast by design
-
-🛠 Tech Stack
-
-Backend: Python (Flask)
-
-Database: SQLite
-
-Frontend: HTML, CSS, JavaScript
-
-Version Control: Git & GitHub
-
-🎯 Project Purpose
+## 🎯 Project Purpose
 
 This project demonstrates practical full-stack development through:
-
-Relational database design
-
-CRUD operations
-
-Flask routing and templating
-
-Frontend–backend integration
-
-Data aggregation and analysis
+- Relational database design
+- CRUD operations
+- Flask routing and templating
+- Frontend–backend integration
+- Data aggregation and analysis
 
 It is designed to be extendable and suitable as a portfolio-quality project.
