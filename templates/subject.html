@@ -7,12 +7,16 @@
 {% block body %}
     {% set subject_id = subject.id %}
     <div class="container">
-        <h1>{{subject.name }}</h1>
+        <h1 class="page-heading">{{subject.name }}</h1>
         <div class="summary-container">
             {% if subject.total_duration and subject.session_count %}
                 <div class="stat-group">
-                    <p class="stat">{{ subject.total_duration }}</p>
-                    <p class="description">MINUTES STUDIED</p>
+                    {% if subject.total_duration < 60 %}
+                        <p class="stat">{{ subject.total_duration }} min</p>
+                    {% else %}
+                        <p class="stat">{{ subject.total_duration // 60}} hr {{ subject.total_duration % 60 }} min</p>
+                    {% endif %}
+                    <p class="description">STUDIED</p>
                 </div>
                 <div class="stat-group">
                     <p class="stat">{{ subject.session_count }}</p>
@@ -23,7 +27,11 @@
                     <p class="description">LAST STUDIED</p>
                 </div>
                 <div class="stat-group">
-                    <p class="stat">{{ (subject.total_duration / subject.session_count) | int }} MIN</p>
+                    {% if (subject.total_duration // subject.session_count) < 60 %}
+                        <p class="stat">{{ subject.total_duration // subject.session_count }} min</p>
+                    {% else %}
+                        <p class="stat">{{ (subject.total_duration // subject.session_count) // 60 }} hr {{ (subject.total_duration // subject.session_count) % 60 }} min</p>
+                    {% endif %}
                     <p class="description">SESSION AVERAGE</p>
                 </div>
                 <div class="stat-group">
@@ -60,7 +68,7 @@
                                     <input type="hidden" name="subject_id" value="{{ subject_id }}">
                                     <input type="hidden" name="topic_id" value="">
                                     <div class="custom-select">
-                                        <div class="select-trigger">Select A Topic</div>
+                                        <div class="select-trigger"><span>Select A Topic</span><img src="{{ url_for('static', filename='images/dropdown-arrow-open.png') }}" alt="" class="dropdown-arrow"></div>
                                         <ul class="options-list">
                                             {% for topic in ungrouped_topics %}
                                             <li class="option" data-value="{{ topic.id }}">{{ topic.name }}</li>
@@ -68,12 +76,6 @@
                                         </ul>
                                     </div>
                                     <button type="submit">Assign Topic</button>
-                                    <!-- <select name="topic_id" required>
-                                        <option value="" selected disabled>Select a topic  </option>
-                                        {% for topic in ungrouped_topics %}
-                                        <option value="{{ topic.id }}">{{ topic.name }}</option>
-                                        {% endfor %}
-                                    </select> -->
                                 </form>
                             </div>
                             <div class="delete-btn-container">

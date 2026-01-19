@@ -104,9 +104,9 @@ def insert_subject(subject_name, subject_user_id):
         return cur.lastrowid 
 
 
-def remove_subject(subject_id):
+def remove_subject(user_id, subject_id):
     with open_db() as cur:
-        cur.execute("DELETE FROM subjects WHERE id = ?", (subject_id,))
+        cur.execute("DELETE FROM subjects WHERE id = ? AND user_id = ?", (subject_id, user_id))
 
         
 def fetch_subject_id(subject_name, user_id):
@@ -134,9 +134,10 @@ def insert_topic(topic_name, subject_id):
         cur.execute("INSERT INTO topics (subject_id, name) VALUES (?, ?)", (subject_id, topic_name))
         return cur.lastrowid
 
-def remove_topic(topic_id):
+def remove_topic(user_id, subject_id, topic_id):
     with open_db() as cur:
-        cur.execute("DELETE FROM topics WHERE id = ?", (topic_id,))
+        cur.execute("""DELETE FROM topics WHERE id = ? AND subject_id =
+                    (SELECT id FROM subjects WHERE id = ? AND user_id = ?)""", (topic_id, subject_id, user_id))
         
         
 def fetch_topic_id(topic_name, subject_id):
@@ -169,9 +170,10 @@ def insert_chapter(chapter_name, subject_id):
         cur.execute("INSERT INTO chapters (subject_id, name) VALUES (?, ?)", (subject_id, chapter_name))
         
 
-def remove_chapter(chapter_id):
+def remove_chapter(user_id, subject_id, chapter_id):
     with open_db() as cur:
-        cur.execute("DELETE FROM chapters WHERE id = ?", (chapter_id,))
+        cur.execute("""DELETE FROM chapters WHERE id = ? AND subject_id =
+                    (SELECT id FROM subjects WHERE id = ? AND user_id = ?)""", (chapter_id, subject_id, user_id))
         
 
 # Initializes database schema

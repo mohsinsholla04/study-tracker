@@ -4,15 +4,23 @@
             <div class="summary-table-container">
                 <div class="summary-table">
                     <div class="stat-group">
-                        <p class="stat">{{ topic.total_duration }}</p>
-                        <p class="description">MINUTES STUDIED</p>
+                         {% if topic.total_duration < 60 %}
+                            <p class="stat">{{ topic.total_duration }} min</p>
+                        {% else %}
+                            <p class="stat">{{ topic.total_duration // 60}} hr {{ topic.total_duration % 60 }} min</p>
+                        {% endif %}
+                        <p class="description">STUDIED</p>
                     </div>
                     <div class="stat-group">
                         <p class="stat">{{ topic.session_count }}</p>
                         <p class="description">SESSIONS COMPLETED</p>
                     </div>
                     <div class="stat-group">
-                        <p class="stat">{{ (topic.total_duration / topic.session_count) | int }} MIN</p>
+                        {% if (topic.total_duration // topic.session_count) < 60 %}
+                            <p class="stat">{{ topic.total_duration // topic.session_count }} min</p>
+                        {% else %}
+                            <p class="stat">{{ (topic.total_duration // topic.session_count) // 60 }} hr {{ (topic.total_duration // topic.session_count) % 60 }} min</p>
+                        {% endif %}
                         <p class="description">SESSION AVERAGE</p>
                     </div>
                     <div class="stat-group">

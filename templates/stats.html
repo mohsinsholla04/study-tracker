@@ -10,11 +10,15 @@
                 <td>{{ subject.name }}</td>
                 <td>{{ subject.subject_topics or "No Topics"}}</td>
                 {% if subject.topicless_session_count %}
-                    <td>{{ subject.total_session_count }} ({{ subject.topicless_session_count }} topicless)</td>
+                    <td>{{ subject.total_session_count }} ({{ subject.topicless_session_count }} without topics)</td>
                 {% else %}
                     <td>{{ subject.total_session_count }}</td>
                 {% endif %}
-                <td>{{ subject.total_duration }} minutes</td>
+                {% if subject.total_duration < 60 %}
+                    <td>{{ subject.total_duration }} min</td>
+                {% else %}
+                    <td>{{ subject.total_duration // 60 }} hr {{ subject.total_duration % 60 }} min</td>
+                {% endif %}
             </tr>
         {% endfor %}
     </table>

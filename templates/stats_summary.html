@@ -1,15 +1,23 @@
 {% if stats_summary.total_duration and stats_summary.total_sessions %}
     <div class="summary-table">
         <div class="stat-group">
-            <p class="stat">{{ stats_summary.total_duration }}</p>
-            <p class="description">MINUTES STUDIED</p>
+            {% if stats_summary.total_duration < 60 %}
+                <p class="stat">{{ stats_summary.total_duration }} min</p>
+            {% else %}
+                <p class="stat">{{ stats_summary.total_duration // 60}} hr {{ stats_summary.total_duration % 60 }} min</p>
+            {% endif %}
+            <p class="description">STUDIED</p>
         </div>
         <div class="stat-group">
             <p class="stat">{{ stats_summary.total_sessions }}</p>
             <p class="description">SESSIONS COMPLETED</p>
         </div>
         <div class="stat-group">
-            <p class="stat">{{ (stats_summary.total_duration / stats_summary.total_sessions) | int }} MIN</p>
+            {% if (stats_summary.total_duration // stats_summary.total_sessions) < 60 %}
+                <p class="stat">{{ (stats_summary.total_duration // stats_summary.total_sessions) }} min</p>
+            {% else %}
+                <p class="stat">{{ (stats_summary.total_duration // stats_summary.total_sessions) // 60 }} hr {{ (stats_summary.total_duration / stats_summary.total_sessions) % 60 }} min</p>
+            {% endif %}
             <p class="description">SESSION AVERAGE</p>
         </div>
     </div>

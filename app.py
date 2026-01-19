@@ -70,7 +70,7 @@ def add_subject(user_id):
 @app.route("/subjects/<int:subject_id>/delete", methods=["POST"])
 @login_required
 def delete_subject(user_id, subject_id):
-    remove_subject(subject_id)
+    remove_subject(user_id, subject_id)
     return redirect("/subjects")
 
 
@@ -93,7 +93,7 @@ def add_topic(user_id, subject_id):
 @app.route("/<int:subject_id>/topics/<int:topic_id>/delete", methods=["POST"])
 @login_required
 def delete_topic(user_id, subject_id, topic_id):
-    remove_topic(topic_id)
+    remove_topic(user_id, subject_id, topic_id)
     return redirect(f"/subjects/{subject_id}")
 
 
@@ -116,7 +116,7 @@ def add_chapter(user_id, subject_id):
 @app.route("/<int:subject_id>/chapters/<int:chapter_id>/delete", methods=["POST"])
 @login_required
 def delete_chapter(user_id, subject_id, chapter_id):
-    remove_chapter(chapter_id)
+    remove_chapter(user_id, subject_id, chapter_id)
     return redirect(f"/subjects/{subject_id}")  
 
 
