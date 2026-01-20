@@ -1,0 +1,108 @@
+.content-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.subjects-list {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    justify-content: space-between;
+    list-style-type: none;
+}
+
+.subjects-list li {
+    background-image: linear-gradient(5deg, 
+        rgb(152, 16, 215), 
+        rgb(172, 16, 215), 
+        rgb(215, 16, 215));
+    display: flex;
+    justify-content: center;
+    align-self: center;
+    width: 80%;
+    padding: 10px 0px;
+    border-radius: 25px;
+    box-shadow: 0px 5px 20px  rgba(142, 24, 185, 0.5);
+}
+
+.subjects-list a {
+    text-decoration: none;
+    text-align: center;
+    color: whitesmoke;
+    font-size: 18px;
+    height: 100%;
+    width: 100%;
+}
+
+
+#add-form-btn {
+    background-image: linear-gradient(45deg, rgb(142, 24, 185) 2%, rgba(142, 24, 185, 0.8) 30%, rgb(149, 107, 210) 50%, rgba(69, 16, 215, 0.59) 100%);    
+    border: none;
+    width: 80%;
+    padding: 8px 0px;
+    border-radius: 25px;
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: whitesmoke;
+}
+
+
+#add-form-btn:hover {
+   background-image: linear-gradient(5deg, 
+   rgb(215, 16, 215)),
+   rgb(172, 16, 215), 
+   rgb(152, 16, 215); 
+}
+
+#add-subject-form {
+    width: 100%;
+}
+
+#form-items-container {
+    width: 100%;
+    position: relative;
+}
+
+#input-container {
+    display: flex;
+    justify-content: center;
+}
+
+#subject-name {
+    background-image: linear-gradient(5deg, 
+        rgb(152, 16, 215), 
+        rgb(172, 16, 215), 
+        rgb(215, 16, 215));
+    border: none;
+    box-shadow: 0px 5px 20px  rgba(142, 24, 185, 0.5);
+    width: 80%;
+    padding: 12px 0px;
+    border-radius: 25px;
+    margin-bottom: 20px;
+    font-size: 16px;
+    color: whitesmoke;
+    text-align: center;
+}
+
+#add-subject-form button {
+    color: rgb(219, 202, 239);
+    background-image: linear-gradient(5deg, 
+        rgb(152, 16, 215), 
+        rgb(172, 16, 215), 
+        rgb(215, 16, 215));
+    padding: 15px;
+    border-radius: 25px;
+    font-weight: 400;
+    border: none;
+    position: absolute;
+    top: 0;
+    right: 10px;
+}
+
+#add-subject-form button:hover {
+    background-image: linear-gradient(45deg, rgb(215, 16, 215), rgb(172, 16, 215), rgb(152, 16, 215));
+}

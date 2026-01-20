@@ -1,0 +1,139 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+html,body {
+    height: 100%;
+    width: 100%;
+}
+
+button {
+    cursor: pointer;
+}
+
+.page-heading {
+    font-size: 100px;
+    background: linear-gradient(to right, #ff00bf, #c36cff, #3800ff);;
+    background-clip: border-box;
+    color: transparent;
+    -webkit-background-clip: text;
+}
+body {
+    background-image: linear-gradient(
+    5deg,
+    hsl(240deg 67% 19%) 0%,   /* Start: Deep Midnight */
+    hsl(256deg 50% 37%) 35%,  /* Mid-transition */
+    hsl(263deg 78% 66%) 81%,  /* Peak Highlight (The "Light" part) */
+    hsl(261deg 69% 35%) 95%,  /* Heading back to dark */
+    hsl(261deg 100% 25%) 100% /* End: Rich Purple */
+);
+    
+    /* Ensures the gradient stays put when you scroll through sessions */
+    background-attachment: fixed;
+    background-size: cover;
+    
+    color: white; 
+    min-height: 100vh;
+
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* Makes sure the inputs don't use the default system font */
+input, button, select {
+    font-family: inherit;
+}
+
+input:focus {
+    outline: none;
+    border: 2px solid rgba(20, 11, 58, 0.5);
+}
+
+h1 {
+    font-size: 64px;
+    margin: 50px 0px;
+    color: rgb(219, 202, 239);
+}
+
+h2 {
+    font-size: 32px;
+    margin: 30px 0px;
+    color: rgb(219, 202, 239);
+}
+
+h3 {
+    font-size: 22px;
+    margin: 15px 0px;
+    color: rgb(219, 202, 239);
+}
+
+h4 {
+    font-size: 18px;
+    margin: 15px 0px;
+    color: rgb(219, 202, 239);
+}
+
+.nav-bar {
+    background-image: linear-gradient(45deg, rgb(142, 24, 185) 2%, rgba(142, 24, 185, 0.41) 30%, rgb(149, 107, 210) 50%, rgba(69, 16, 215, 0.59) 100%);
+
+    box-shadow: 0px 10px 10px rgba(127, 7, 148, 0.2);
+    padding: 35px 30px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.nav-items {
+    list-style-type: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.nav-links-container {
+    display: flex;
+    justify-content: space-evenly;
+    gap: 40px;
+}
+
+.nav-link {
+    color: rgb(219, 202, 239);
+    font-size: 17px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.nav-link:hover {
+    color: rgba(224, 158, 238, 0.72);}
+
+.create-session {
+    color: rgb(219, 202, 239);
+    background-image: linear-gradient(5deg, 
+        rgb(152, 16, 215), 
+        rgb(172, 16, 215), 
+        rgb(215, 16, 215));
+    padding: 15px;
+    box-shadow: 0px 2px 20px rgba(20, 11, 58, 0.2);
+    border-radius: 25px;
+    font-size: 17px;
+    font-weight: 700;
+    text-decoration: none;
+    border: none;
+}
+
+.create-session:hover {
+    background-image: linear-gradient(45deg, rgb(215, 16, 215), rgb(172, 16, 215), rgb(152, 16, 215));
+}

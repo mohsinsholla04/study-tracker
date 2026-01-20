@@ -1,0 +1,366 @@
+body {
+    min-height: 100%;
+    height: auto;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.chapters-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.chapters-list {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    align-items: center;
+    justify-content: center;
+}
+.chapter-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.chapter-container details {
+    width: 100%;
+}
+
+.chapter-container .topic-pill {
+    width: calc(100% - 60px);
+    margin: 20px 0px 20px 60px;
+}
+
+.chapter-pill {
+    background-image: linear-gradient(5deg, 
+    rgb(152, 16, 215), 
+    rgb(172, 16, 215), 
+    rgb(215, 16, 215));
+    padding: 25px 15px;
+    width: 100%;
+    border-radius: 25px;
+    box-shadow: 0px 5px 20px  rgba(142, 24, 185, 0.5);
+}
+
+.topic-pill {
+    background-image: linear-gradient(5deg, 
+    rgb(152, 16, 215), 
+    rgb(172, 16, 215), 
+    rgb(215, 16, 215));
+    padding: 20px 15px;
+    border-radius: 25px;
+    box-shadow: 0px 5px 20px  rgba(142, 24, 185, 0.5);
+    margin: 20px 0px;
+    width: 100%;
+}
+
+.topic-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat {
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.description {
+    font-size: 14px;
+    
+}
+
+.summary-table {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    border: 1px solid rgb(193, 186, 186);
+    border-radius: 25px;
+    padding: 20px;
+}  
+
+.summary-table-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+.stat-group {
+    text-align: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgb(193, 186, 186);
+}
+
+.summary-container {
+    background-image: linear-gradient(5deg, 
+    rgb(152, 16, 215), 
+    rgb(172, 16, 215), 
+    rgb(215, 16, 215));
+    border-radius: 25px;
+    padding: 40px 60px;  
+    text-align: center;
+    width: 90%;
+    display: flex;
+    justify-content: space-evenly;
+    gap: 20px;
+
+}
+
+.stat {
+    font-size: 30px;
+    font-weight: 700;
+} 
+
+.description {
+    font-size: 14px;
+
+}
+
+.ungrouped-topics-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.topics-list {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    align-items: center;
+    justify-content: center;
+    width: 80%;
+}
+
+.not-studied {
+    margin: 30px;
+}
+
+.add-chapter, #chapter-name {
+    background-image: linear-gradient(45deg, rgb(142, 24, 185) 2%, rgba(142, 24, 185, 0.8) 30%, rgb(149, 107, 210) 50%, rgba(69, 16, 215, 0.59) 100%);
+    border: none;
+    width: 80%;
+    border-radius: 25px;
+    margin-bottom: 20px;
+    color: whitesmoke;
+    padding: 18px;
+    box-shadow: 0px 5px 20px rgba(162, 18, 215, 0.73);
+}
+
+.add-chapter {
+    font-size: 24px;
+
+}
+
+#chapter-name {
+    text-align: center;
+    font-size: 16px;
+}
+
+#chapter-form, #topic-form {
+    width: 100%;
+}
+
+.form-items-container {
+    width: 100%;
+    position: relative;
+}
+
+.input-container {
+    display: flex;
+    justify-content: center;
+}
+
+#chapter-form button {
+    top: 10px;
+    right: 10px;
+}
+#chapter-form button, #topic-form button {
+    color: rgb(219, 202, 239);
+    background-image: linear-gradient(5deg, rgb(152, 16, 215), rgb(172, 16, 215), rgb(215, 16, 215));
+    padding: 15px;
+    border-radius: 25px;
+    font-weight: 400;
+    border: none;
+    position: absolute;
+}
+
+#topic-form button {
+    top: 20px;
+    right: 20px;
+}
+
+#add-topic-btn, #topic-name {
+    background-image: linear-gradient(45deg, rgb(142, 24, 185) 2%, rgba(142, 24, 185, 0.8) 30%, rgb(149, 107, 210) 50%, rgba(69, 16, 215, 0.59) 100%);
+    border-radius: 25px;
+    box-shadow: 0px 5px 20px  rgba(142, 24, 185, 0.5);
+    margin: 20px 0px;
+    width: 80%;
+    border: none;
+    color: whitesmoke;
+    padding: 15px 0;
+}
+
+#add-topic-btn {
+    font-size: 24px;
+}
+
+#topic-name {
+    font-size: 16px;
+    text-align: center;
+}
+
+.delete-btn-container {
+    position: relative;
+    margin-top: 100px;
+}
+
+.delete-button {
+    color: rgb(219, 202, 239);
+    padding: 14px;
+    border-radius: 25px;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    border: none;
+    background-color: #e90c0cbd;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+#delete-subject {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    color: rgb(219, 202, 239);
+    padding: 15px;
+    box-shadow: 0px 2px 20px rgb(255, 0, 0);
+    border-radius: 25px;
+    font-size: 17px;
+    font-weight: 700;
+    text-decoration: none;
+    border: none;
+    margin-top: 50px;
+    background-color: #e90c0cbd;
+}
+
+.overlay {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: none;
+    width: 100vw;
+    height: 100vh;
+
+    backdrop-filter: blur(8px);
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.caution-container {
+    padding: 15vh;
+    background-color: #d035f0c4;
+    border-radius: 25px;
+    box-shadow: 4px 8px 20px rgba(56, 13, 13, 0.33);
+    position: relative;
+}
+
+.hide {
+    position: absolute;
+    top:0px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 32px;
+    color: whitesmoke;
+    cursor: pointer;
+    }
+    
+.delete-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;  
+}
+
+.delete-form p {
+    font-size: 24px;
+}
+
+.delete-form button {
+    background-color: #8000c8bd;
+    color: rgb(219, 202, 239);
+    padding: 15px;
+    border-radius: 25px;
+    font-size: 17px;
+    font-weight: 700;
+    text-decoration: none;
+    border: none;
+    margin-top: 70px;
+}
+
+.assign-form-cont button{
+    color: white;
+    background-image: linear-gradient(5deg, rgb(152, 16, 215), rgb(172, 16, 215), rgb(215, 16, 215));
+    padding: 15px;
+    border-radius: 25px;
+    font-size: 14px;
+    border: none;
+}
+.custom-select {
+    margin: 30px 0;
+    width: 200px;
+    border-radius: 25px;
+}
+
+.select-trigger {
+    background-color: #b919d4;
+    padding: 15px;
+    border: none;
+    position: relative;
+}
+
+.options-list {
+    display: none;
+    /* background-image: linear-gradient(5deg, rgb(152, 16, 215), rgb(172, 16, 215), rgb(215, 16, 215)); */
+    background-color: #b919d4;
+
+    /* border-radius: 3px; */
+    padding: 0;
+    list-style: none;
+    padding: 15px;
+}
+
+.custom-select.open .options-list {
+    display: block;
+
+}
+
+.option {
+    padding: 10px;
+}
+.option:hover {
+  background-color: #9c27b0; /* That purple from your image! */
+  color: white;
+}
+
+.dropdown-arrow {
+    width: 15px;
+    position: absolute;
+    right: 15px;
+    top: 18px;
+}
